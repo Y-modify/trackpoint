@@ -10,6 +10,7 @@ parser.add_argument('-s', '--size', type=int, default=100, help='The side length
 parser.add_argument('-p', '--padding', type=int, default=10, help='The padding between markers')
 parser.add_argument('-r', '--rows', type=int, default=4, help='The number of markers in one row')
 parser.add_argument('-o', '--out', type=str, required=True, help='Output Image')
+parser.add_argument('--dict', type=str, default="4X4_50", help='The ArUco marker dictionary')
 args = parser.parse_args()
 
 num = args.num
@@ -21,7 +22,8 @@ cols = math.ceil(num / rows)
 length = size + 2 * padding
 canvas = Image.new('L', (length * rows, length * cols), 255)
 
-dictionary = aruco.getPredefinedDictionary(aruco.DICT_4X4_50)
+
+dictionary = aruco.getPredefinedDictionary(getattr(aruco, "DICT_" + args.dict))
 
 for i in range(num):
     marker = aruco.drawMarker(dictionary, i, size)
