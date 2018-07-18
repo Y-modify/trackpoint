@@ -32,6 +32,9 @@ for key in (str(i) for i in range(8)):
     data = extract(indata['data'], key, 'transform')
     x, y, z = data.T
     ax.plot(x, y, z, label=key)
+    rotation = extract(indata['data'], key, 'rotation')
+    u, v, w = (rotation * data).T
+    ax.quiver(x, y, z, u, v, w, length=0.05, normalize=True)
 
 ax.legend()
 plt.savefig(args.output, dpi=args.dpi)
