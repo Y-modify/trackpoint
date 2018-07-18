@@ -18,18 +18,14 @@ with open(args.input) as f:
 metadata = indata['metadata']
 
 def extract(data, key, component):
-    return np.array([v[key][component] if key in v else [0, 0, 0] for v in data])
+    return np.array([v[key][component] for v in data if key in v])
 
-data = extract(indata['data'], '0', 'transform')
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-for i, d in enumerate(data):
-    if i == len(data) - 1:
-        break
-
-    X, Y, Z = d
-    U, V, W = data[i + 1] - d
-    ax.quiver(X, Y, Z, U, V, W)
+for key in (str(i) for i in range(8)):
+    data = extract(indata['data'], key, 'transform')
+    x, y, z = data.T
+    ax.plot(x, y, z)
 
 plt.savefig(args.output)
