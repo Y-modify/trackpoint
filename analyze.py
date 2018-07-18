@@ -5,6 +5,7 @@ import json
 parser = argparse.ArgumentParser(description='Analyze the output data')
 parser.add_argument('-i', '--input', type=str, required=True, help='Input json data')
 parser.add_argument('-v', '--visualize', action="store_true", help='Show matplotlib window')
+parser.add_argument('--dpi', type=int, default=400, help='DPI of output image')
 parser.add_argument('-o', '--output', type=str, required=True, help='Output image path')
 
 args = parser.parse_args()
@@ -33,6 +34,6 @@ for key in (str(i) for i in range(8)):
     ax.plot(x, y, z, label=key)
 
 ax.legend()
-plt.savefig(args.output)
+plt.savefig(args.output, dpi=args.dpi)
 if args.visualize:
     plt.show()
