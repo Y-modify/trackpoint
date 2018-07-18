@@ -33,9 +33,7 @@ if args.output_video:
     out = cv2.VideoWriter(args.output_video, fourcc, fps, (width, height))
 
 while ret:
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-    corners, ids, _ = aruco.detectMarkers(gray, dictionary, cameraMatrix=cameraMatrix, distCoeff=distCoeff)
+    corners, ids, _ = aruco.detectMarkers(frame, dictionary, cameraMatrix=cameraMatrix, distCoeff=distCoeff)
 
     rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, args.size, cameraMatrix, distCoeff)
 
