@@ -26,6 +26,7 @@ ax = fig.add_subplot(111, projection='3d')
 for key in (str(i) for i in range(8)):
     data = extract(indata['data'], key, 'transform')
     x, y, z = data.T
-    ax.plot(x, y, z)
+    ax.plot(x, y, z, label=key)
 
+ax.legend()
 plt.savefig(args.output)
