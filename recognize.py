@@ -11,6 +11,8 @@ parser.add_argument('--dict', type=str, default="4X4_50", help='The ArUco marker
 parser.add_argument('-m', '--camera-matrix', type=str, required=True, help='The path to npy file contains the camera matrix')
 parser.add_argument('-d', '--dist-coeff', type=str, required=True, help='The path to npy file contains the distortion coefficients')
 parser.add_argument('-s', '--size', type=float, required=True, help='The length of the markers\' side')
+parser.add_argument('--output-video', type=str, help='Output the processes video to the specified path')
+parser.add_argument('--output-codec', type=str, default='XVID', help='The fourcc code to output the video')
 
 args = parser.parse_args()
 
@@ -22,11 +24,15 @@ distCoeff = np.load(args.dist_coeff)
 result = []
 
 cap = cv2.VideoCapture(args.input if args.input else args.camera)
-while True:
-    ret, frame = cap.read()
-    if not ret:
-        break
+ret, frame = cap.read()
+height, width, _ = frame.shape
+fps = cap.get(cv2.CAP_PROP_FPS)
 
+if args.output_video:
+    fourcc = cv2.VideoWriter_fourcc(*args.output_codec)
+    out = cv2.VideoWriter(args.output_video, fourcc, fps, (width, height))
+
+while ret:
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     corners, ids, _ = aruco.detectMarkers(gray, dictionary, cameraMatrix=cameraMatrix, distCoeff=distCoeff)
@@ -35,8 +41,17 @@ while True:
 
     result.append({int(idn): {"rotation": rvec.tolist(), "transform": tvec.tolist()} for (rvec, tvec, idn) in zip(rvecs, tvecs, ids)})
 
+    if args.output_video:
+        aruco.drawDetectedMarkers(frame, corners, ids, (0,255,0))
+        for rvec, tvec in zip(rvecs, tvecs):
+            aruco.drawAxis(frame, cameraMatrix, distCoeff, rvec, tvec, 0.1)
+        out.write(frame)
+
+    ret, frame = cap.read()
 
 cap.release()
+if args.output_video:
+    out.release()
 cv2.destroyAllWindows()
 
 print(result)
