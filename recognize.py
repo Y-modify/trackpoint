@@ -29,6 +29,7 @@ cap = cv2.VideoCapture(args.input if args.input else args.camera)
 ret, frame = cap.read()
 height, width, _ = frame.shape
 fps = cap.get(cv2.CAP_PROP_FPS)
+frame_count = cap.get(cv2.CAP_PROP_FRAME_COUNT)
 
 if args.output_video:
     fourcc = cv2.VideoWriter_fourcc(*args.output_codec)
@@ -54,8 +55,27 @@ if args.output_video:
     out.release()
 cv2.destroyAllWindows()
 
+data = {
+    "metadata": {
+        "frame": {
+            "width": width,
+            "height": height,
+            "fps": fps,
+            "count": frame_count
+        },
+        "camera": {
+            "matrix": cameraMatrix.tolist(),
+            "distortion": distCoeff.tolist()
+        },
+        "marker": {
+            "dict": args.dict,
+            "size": args.size
+        }
+    },
+    "data": result
+}
 if args.output:
     with open(args.output, 'w') as f:
-        json.dump(result, f)
+        json.dump(data, f)
 else:
-    print(json.dumps(result))
+    print(json.dumps(data))
