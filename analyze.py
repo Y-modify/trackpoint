@@ -18,7 +18,7 @@ with open(args.input) as f:
 metadata = indata['metadata']
 
 def extract(data, key, component):
-    return np.array([v[key][component] for v in data if key in v])
+    return np.array([v[key][component] if key in v else [np.nan]*3 for v in data])
 
 
 fig = plt.figure()
