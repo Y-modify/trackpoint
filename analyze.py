@@ -1,16 +1,20 @@
-import matplotlib as mpl
-mpl.use('Agg')
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 import argparse
 import json
 
 parser = argparse.ArgumentParser(description='Analyze the output data')
 parser.add_argument('-i', '--input', type=str, required=True, help='Input json data')
+parser.add_argument('-v', '--visualize', action="store_true", help='Show matplotlib window')
 parser.add_argument('-o', '--output', type=str, required=True, help='Output image path')
 
 args = parser.parse_args()
+
+if not args.visualize:
+    import matplotlib as mpl
+    mpl.use('Agg')
+
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 with open(args.input) as f:
     indata = json.load(f)
@@ -30,3 +34,5 @@ for key in (str(i) for i in range(8)):
 
 ax.legend()
 plt.savefig(args.output)
+if args.visualize:
+    plt.show()
