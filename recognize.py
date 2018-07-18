@@ -4,7 +4,7 @@ import numpy as np
 import argparse
 import json
 
-parser = argparse.ArgumentParser(description='Generate an image containing ArUco markers')
+parser = argparse.ArgumentParser(description='Recognize markers in the video')
 group = parser.add_mutually_exclusive_group()
 group.add_argument('-i', '--input', type=str, help='Input Movie')
 group.add_argument('-c', '--camera', type=int, default=0, help='Input Camera')
