@@ -6,6 +6,7 @@ parser = argparse.ArgumentParser(description='Analyze the output data')
 parser.add_argument('-i', '--input', type=str, required=True, help='Input json data')
 parser.add_argument('-v', '--visualize', action="store_true", help='Show matplotlib window')
 parser.add_argument('--dpi', type=int, default=400, help='DPI of output image')
+parser.add_argument('--with-rotation', action="store_true", help='Add rotation arrows')
 parser.add_argument('-o', '--output', type=str, required=True, help='Output image path')
 
 args = parser.parse_args()
@@ -32,9 +33,10 @@ for key in (str(i) for i in range(8)):
     data = extract(indata['data'], key, 'transform')
     x, y, z = data.T
     ax.plot(x, y, z, label=key)
-    rotation = extract(indata['data'], key, 'rotation')
-    u, v, w = (rotation * data).T
-    ax.quiver(x, y, z, u, v, w, length=0.05, normalize=True)
+    if args.with_rotation:
+        rotation = extract(indata['data'], key, 'rotation')
+        u, v, w = (rotation * data).T
+        ax.quiver(x, y, z, u, v, w, length=0.05, normalize=True, label=key)
 
 ax.legend()
 plt.savefig(args.output, dpi=args.dpi)
