@@ -38,9 +38,11 @@ if args.output_video:
 while ret:
     corners, ids, _ = aruco.detectMarkers(frame, dictionary, cameraMatrix=cameraMatrix, distCoeff=distCoeff)
 
-    rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, args.size, cameraMatrix, distCoeff)
-
-    result.append({int(idn): {"rotation": rvec[0].tolist(), "transform": tvec[0].tolist()} for (rvec, tvec, idn) in zip(rvecs, tvecs, ids)})
+    if ids is None:
+        result.append({})
+    else:
+        rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(corners, args.size, cameraMatrix, distCoeff)
+        result.append({int(idn): {"rotation": rvec[0].tolist(), "transform": tvec[0].tolist()} for (rvec, tvec, idn) in zip(rvecs, tvecs, ids)})
 
     if args.output_video:
         aruco.drawDetectedMarkers(frame, corners, ids, (0,255,0))
