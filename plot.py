@@ -9,6 +9,8 @@ parser.add_argument('--dpi', type=int, default=400, help='DPI of output image')
 parser.add_argument('--with-rotation', action="store_true", help='Add rotation arrows')
 parser.add_argument('-a', '--animation', type=str, help='Create animation')
 parser.add_argument('-s', '--smoothing', type=int, help='Take a moving average')
+parser.add_argument('--azim', type=int, default=-60, help='Set the camera perspective')
+parser.add_argument('--elev', type=int, default=30, help='Set the camera perspective')
 parser.add_argument('-o', '--output', type=str, required=True, help='Output image path')
 
 args = parser.parse_args()
@@ -59,7 +61,7 @@ def plot(i, ax, lims=None):
             rotation = extract(indata['data'], key, 'rotation')[:i]
             u, v, w = (rotation * data).T
             ax.quiver(x, y, z, u, v, w, length=0.05, normalize=True, label=key)
-        # ax.view_init(azim=-90., elev=-135.)
+        ax.view_init(azim=args.azim, elev=args.elev)
         ax.legend()
     return lines
 
